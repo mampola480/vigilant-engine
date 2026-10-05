@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>داگرتنی ستۆری سناپچات | mam pola</title>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: #0b0f17;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Glowing Background Elements */
+    .bg-blob-1 {
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(255, 252, 0, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(50px);
+    }
+
+    .bg-blob-2 {
+      position: absolute;
+      bottom: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      border-radius: 50%;
+      z-index: 0;
+      filter: blur(60px);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      z-index: 1;
+    }
+
+    .card {
+      background: rgba(22, 30, 46, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 35px 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .snap-logo {
+      width: 70px;
+      height: 70px;
+      background: #fffc00;
+      color: #000;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 10px 25px rgba(255, 252, 0, 0.3);
+      transform: rotate(-3deg);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .snap-logo {
+      transform: rotate(0deg) scale(1.05);
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .input-wrapper i.input-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 48px 16px 50px;
+      background-color: rgba(15, 23, 42, 0.8);
+      border: 2px solid #334155;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      direction: ltr;
+      transition: all 0.25s ease;
+    }
+
+    input:focus {
+      border-color: #fffc00;
+      box-shadow: 0 0 15px rgba(255, 252, 0, 0.2);
+    }
+
+    .paste-btn {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .paste-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+
+    .main-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #fffc00 0%, #e6e400 100%);
+      color: #000;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 20px rgba(255, 252, 0, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(255, 252, 0, 0.35);
+    }
+
+    .main-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(0, 0, 0, 0.2);
+      border-top-color: #000;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Result Section */
+    #result {
+      margin-top: 24px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    video {
+      width: 100%;
+      max-height: 380px;
+      border-radius: 16px;
+      background: #000;
+      margin-top: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .download-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      background-color: #22c55e;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+      transition: all 0.25s ease;
+    }
+
+    .download-action:hover {
+      background-color: #16a34a;
+      transform: translateY(-2px);
+    }
+
+    .error-msg {
+      background-color: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+
+    /* Footer / Credits */
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    .credit-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      color: #94a3b8;
+      font-size: 13px;
+      backdrop-filter: blur(8px);
+    }
+
+    .credit-badge strong {
+      color: #fffc00;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .heart-icon {
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blob-1"></div>
+  <div class="bg-blob-2"></div>
+
+  <div class="container">
+    <div class="card">
+      <div class="snap-logo">
+        <i class="fa-brands fa-snapchat"></i>
+      </div>
+
+      <h1>داگرتنی ستۆری سناپچات</h1>
+      <p class="subtitle">لینکی ستۆرییەکە لێرە بنووسە بۆ داگرتنی ڕاستەوخۆی ڤیدیۆکە بە بەرزترین کوالێتی</p>
+
+      <div class="input-wrapper">
+        <i class="fa-solid fa-link input-icon"></i>
+        <input type="url" id="snapUrl" placeholder="https://story.snapchat.com/s/..." required />
+        <button class="paste-btn" onclick="pasteFromClipboard()">
+          <i class="fa-regular fa-paste"></i> پەیست
+        </button>
+      </div>
+
+      <button class="main-btn" id="downloadBtn" onclick="fetchStory()">
+        <span id="btnText">داگرتن</span>
+        <i class="fa-solid fa-arrow-down-long" id="btnIcon"></i>
+        <div class="spinner" id="btnSpinner"></div>
+      </button>
+
+      <div id="result"></div>
+    </div>
+
+    <!-- Credits Footer -->
+    <div class="footer">
+      <div class="credit-badge">
+        <span>دروست کراوە بە</span>
+        <i class="fa-solid fa-heart heart-icon"></i>
+        <span>لەلایەن</span>
+        <strong>mam pola</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function pasteFromClipboard() {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          document.getElementById('snapUrl').value = text;
+        }
+      } catch (err) {
+        alert('تکایە بە دەست لینکەکە بنووسە یان ڕێگە بە پێستکردن بدە');
+      }
+    }
+
+    async function fetchStory() {
+      const urlInput = document.getElementById('snapUrl').value.trim();
+      const resultDiv = document.getElementById('result');
+      const btnText = document.getElementById('btnText');
+      const btnIcon = document.getElementById('btnIcon');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      if (!urlInput) {
+        resultDiv.innerHTML = '<div class="error-msg"><i class="fa-solid fa-circle-exclamation"></i> تکایە پێشتر لینکێک بنووسە</div>';
+        return;
+      }
+
+      // UI Loading State
+      btnText.textContent = 'چاوەڕێ بکە...';
+      btnIcon.style.display = 'none';
+      btnSpinner.style.display = 'block';
+      downloadBtn.style.opacity = '0.8';
+      downloadBtn.disabled = true;
+      resultDiv.innerHTML = '';
+
+      try {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(urlInput);
+        const response = await fetch(proxyUrl);
+        
+        if (!response.ok) {
+          throw new Error('کێشەیەک لە وەرگرتنی زانیاری هەیە');
+        }
+
+        const html = await response.text();
+
+        // Search for MP4 Video URL
+        const videoMatch = html.match(/https:\/\/[^"]+\.mp4[^"]*/i);
+
+        if (videoMatch && videoMatch[0]) {
+          const cleanUrl = videoMatch[0].replace(/\\u0026/g, '&');
+          
+          resultDiv.innerHTML = `
+            <video controls autoplay src="${cleanUrl}"></video>
+            <a href="${cleanUrl}" target="_blank" download class="download-action">
+              <i class="fa-solid fa-circle-down"></i>
+              داگرتنی ڤیدیۆکە
+            </a>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="error-msg">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              نەتوانرا لینکی ڤیدیۆکە بدۆزرێتەوە. دڵنیابەوە لەوەی ستۆرییەکە گشتییە (Public).
+            </div>
+          `;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `
+          <div class="error-msg">
+            <i class="fa-solid fa-wifi"></i>
+            هەڵەیەک لە پەیوەندیدا ڕوویدا. تکایە دووبارە هەوڵبدەرەوە.
+          </div>
+        `;
+      } finally {
+        // Reset UI Button State
+        btnText.textContent = 'داگرتن';
+        btnIcon.style.display = 'inline-block';
+        btnSpinner.style.display = 'none';
+        downloadBtn.style.opacity = '1';
+        downloadBtn.disabled = false;
+      }
+    }
+  </script>
+
+</body>
+</html>
